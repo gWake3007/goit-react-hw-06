@@ -3,12 +3,16 @@ import * as Yup from "yup";
 import { nanoid } from "nanoid";
 import { useId } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useDispatch } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
 
-const ContactForm = ({ onAdd }) => {
+const ContactForm = () => {
   const initialValues = {
     name: "",
     number: "",
   };
+
+  const dispatch = useDispatch();
 
   const nameValidation = (value) => {
     const nameRegex = /^[a-zA-Z]+$/;
@@ -50,10 +54,12 @@ const ContactForm = ({ onAdd }) => {
       .required("Required"),
   });
   const handleSubmit = (values, actions) => {
-    onAdd({
+    const newContact = {
       id: nanoid(),
-      ...values,
-    });
+      name: values.name,
+      number: values.number,
+    };
+    dispatch(addContact(newContact));
     actions.resetForm();
   };
   const nameId = useId();
